@@ -1,0 +1,48 @@
+{
+    "project_info": {
+        "project_number": "965845198860",
+        "firebase_url": "https://uno-game-2e44b-default-rtdb.firebaseio.com",
+        "project_id": "uno-game-2e44b",
+        "storage_bucket": "uno-game-2e44b.firebasestorage.app"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:965845198860:android:6ae3959b8d84c682cb6629",
+                "android_client_info": {
+                    "package_name": "com.example.unomultiplayer"
+                }
+            },
+            "oauth_client": [
+                {
+                    "client_id": "965845198860-63vs4c2ketji0v5hlmu5tfpe0m38062o.apps.googleusercontent.com",
+                    "client_type": 1,
+                    "android_info": {
+                        "package_name": "com.example.unomultiplayer",
+                        "certificate_hash": "644c872611f064a873983050a949b2aec5ebe834"
+                    }
+                },
+                {
+                    "client_id": "965845198860-6flq8lrqvldn87rupt3qiv2bc03q3ud7.apps.googleusercontent.com",
+                    "client_type": 3
+                }
+            ],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyBFC6V394lMdT0-xFXM5XUZzvCY1pcdbvY"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": [
+                        {
+                            "client_id": "965845198860-6flq8lrqvldn87rupt3qiv2bc03q3ud7.apps.googleusercontent.com",
+                            "client_type": 3
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}

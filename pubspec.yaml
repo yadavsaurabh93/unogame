@@ -1,0 +1,63 @@
+name: uno_game
+description: "An Ultimate 3D UNO Game."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Standard Icons
+  cupertino_icons: ^1.0.2
+  firebase_core: ^2.27.0
+  firebase_database: ^10.4.0
+  google_fonts: ^6.1.0
+  shared_preferences: ^2.5.4
+  image_picker: ^1.2.1
+  audioplayers: ^5.2.1
+  firebase_auth: ^4.17.8
+  google_sign_in: ^6.2.1
+  cloud_firestore: ^4.17.5
+  google_generative_ai: ^0.4.7
+  flutter_local_notifications: ^17.0.0
+  timezone: ^0.9.2
+  url_launcher: ^6.2.3
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+  # 1. Splash Screen Package
+  flutter_native_splash: ^2.3.10
+
+  # 2. App Icon Package (Yeh naya add kiya hai)
+  flutter_launcher_icons: ^0.13.1
+
+# --- 1. SPLASH SCREEN SETTING ---
+flutter_native_splash:
+  color: "#121212"
+  image: assets/logo.png
+  android_12:
+    image: assets/logo.png
+    icon_background_color: "#121212"
+  fullscreen: true
+
+# --- 2. APP ICON SETTING ---
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png" # Tumhara logo hi icon banega
+  min_sdk_android: 21
+  adaptive_icon_background: "#121212" # Android ke liye background color
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
