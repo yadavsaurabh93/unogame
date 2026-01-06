@@ -135,7 +135,8 @@ class FirestoreService {
     }
   }
 
-  static Future<void> updateStats({int? wins, int? losses, int? level}) async {
+  static Future<void> updateStats(
+      {int? wins, int? losses, int? level, int? coins, int? xp}) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
@@ -143,6 +144,8 @@ class FirestoreService {
     if (wins != null) updates['wins'] = wins;
     if (losses != null) updates['losses'] = losses;
     if (level != null) updates['level'] = level;
+    if (coins != null) updates['coins'] = coins;
+    if (xp != null) updates['xp'] = xp;
 
     if (updates.isNotEmpty) {
       await _db.collection('users').doc(user.uid).update(updates);

@@ -641,16 +641,19 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
   void _win(String w, bool isVictory) {
     SystemSound.play(SystemSoundType.click);
 
-    // REWARD LOGIC: 500 Coins for winning Online
     if (isVictory) {
-      DataManager.coins += 500;
-      DataManager.wins++;
-      FirestoreService.updateCoins(DataManager.coins);
-      FirestoreService.updateStats(wins: DataManager.wins);
-      _showAlert("WON 500 COINS!", Colors.amber);
+      DataManager.addWin();
+      FirestoreService.updateStats(
+          wins: DataManager.wins,
+          coins: DataManager.coins,
+          level: DataManager.level);
+      _showAlert("VICTORY! +50 XP", Colors.amber);
     } else {
-      DataManager.losses++;
-      FirestoreService.updateStats(losses: DataManager.losses);
+      DataManager.addLoss();
+      FirestoreService.updateStats(
+          losses: DataManager.losses,
+          coins: DataManager.coins,
+          level: DataManager.level);
     }
 
     if (widget.isHost && activePlayersIds.length > 1) {

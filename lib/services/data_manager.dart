@@ -60,6 +60,35 @@ class DataManager {
   static int get dailySpinsUsed => _prefs.getInt('dailySpinsUsed') ?? 0;
   static set dailySpinsUsed(int v) => _prefs.setInt('dailySpinsUsed', v);
 
+  // XP & PROGRESSION
+  static int get xp => _prefs.getInt('xp') ?? 0;
+  static set xp(int v) => _prefs.setInt('xp', v);
+
+  static void addWin() {
+    wins++;
+    coins += 100; // Reward
+    xp += 50;
+    _checkLevelUp();
+  }
+
+  static void addLoss() {
+    losses++;
+    coins += 20; // Consolation
+    xp += 10;
+    _checkLevelUp();
+  }
+
+  static void _checkLevelUp() {
+    // Simple Formula: Level up every 100 XP * Level
+    // e.g. Lvl 1->2 needs 100 XP (2 wins). Lvl 2->3 needs 200 XP.
+    int requiredXp = level * 100;
+    if (xp >= requiredXp) {
+      xp -= requiredXp; // Carry over excess XP
+      level++;
+      playSound(); // Ding!
+    }
+  }
+
   // STREAK TRACKING
   static int get currentStreak => _prefs.getInt('currentStreak') ?? 0;
   static set currentStreak(int v) => _prefs.setInt('currentStreak', v);

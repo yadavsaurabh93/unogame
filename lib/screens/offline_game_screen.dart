@@ -433,9 +433,9 @@ class _OfflineGameScreenState extends State<OfflineGameScreen>
 
   void _win(String w, bool isVictory) {
     if (isVictory) {
-      DataManager.wins++;
+      DataManager.addWin();
     } else {
-      DataManager.losses++;
+      DataManager.addLoss();
     }
     Navigator.pushReplacement(
         context,
