@@ -252,71 +252,71 @@ class DataManager {
     {
       "id": "Cyber Punk",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Cyber",
-      "price": 1
+      "price": 1000
     },
     {
       "id": "Cool Cat",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Leo",
-      "price": 1
+      "price": 1000
     },
     {
       "id": "Bearded Man",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Jack",
-      "price": 1
+      "price": 1200
     },
     {
       "id": "Ninja",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Ninja",
-      "price": 1
+      "price": 1500
     },
     {
       "id": "Samurai",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Samurai",
-      "price": 1
+      "price": 1500
     },
 
     // PREMIUM (2000-3000)
     {
       "id": "Robot V1",
       "url": "https://api.dicebear.com/7.x/bottts/png?seed=Robo1",
-      "price": 2
+      "price": 2000
     },
     {
       "id": "Robot V2",
       "url": "https://api.dicebear.com/7.x/bottts/png?seed=Robo2",
-      "price": 2
+      "price": 2000
     },
     {
       "id": "Monster Red",
       "url": "https://api.dicebear.com/7.x/bottts/png?seed=MonsterRed",
-      "price": 2
+      "price": 2500
     },
     {
       "id": "Monster Green",
       "url": "https://api.dicebear.com/7.x/bottts/png?seed=MonsterGreen",
-      "price": 2
+      "price": 2500
     },
     {
       "id": "Space Explorer",
       "url": "https://api.dicebear.com/7.x/adventurer/png?seed=Space",
-      "price": 3
+      "price": 3000
     },
     {
       "id": "Wizard",
       "url": "https://api.dicebear.com/7.x/adventurer/png?seed=Wizard",
-      "price": 3
+      "price": 3000
     },
 
     // LEGENDARY (5000+)
     {
       "id": "King",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=King",
-      "price": 5
+      "price": 5000
     },
     {
       "id": "Queen",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Queen",
-      "price": 5
+      "price": 5000
     },
     {
       "id": "Gold Bot",
@@ -326,7 +326,7 @@ class DataManager {
     {
       "id": "Diamond",
       "url": "https://api.dicebear.com/7.x/avataaars/png?seed=Diamond",
-      "price": 1
+      "price": 10000
     },
     {"id": "Gojo Suit", "url": "assets/gojo_suit.png", "price": 5000},
   ];
@@ -340,72 +340,72 @@ class DataManager {
     {
       "id": "Sunset",
       "colors": [Color(0xFFFF512F), Color(0xFFDD2476)],
-      "price": 5
+      "price": 500
     },
     {
       "id": "Forest",
       "colors": [Color(0xFF11998e), Color(0xFF38ef7d)],
-      "price": 5
+      "price": 500
     },
     {
       "id": "Purple Haze",
       "colors": [Color(0xFF8E2DE2), Color(0xFF4A00E0)],
-      "price": 5
+      "price": 500
     },
     {
       "id": "Ocean View",
       "colors": [Color(0xFF00c6ff), Color(0xFF0072ff)],
-      "price": 5
+      "price": 500
     },
     {
       "id": "Royal",
       "colors": [Color(0xFF2b5876), Color(0xFF4e4376)],
-      "price": 1
+      "price": 1000
     },
     {
       "id": "Fire & Ice",
       "colors": [Color(0xFFC33764), Color(0xFF1D2671)],
-      "price": 1
+      "price": 1000
     },
     {
       "id": "Neon City",
       "colors": [Color(0xFFf12711), Color(0xFFf5af19)],
-      "price": 1
+      "price": 1000
     },
     {
       "id": "Lush Green",
       "colors": [Color(0xFF56ab2f), Color(0xFFa8e063)],
-      "price": 1
+      "price": 1000
     },
     {
       "id": "Dark Void",
       "colors": [Color(0xFF000000), Color(0xFF434343)],
-      "price": 2
+      "price": 2000
     },
     {
       "id": "Gold Rush",
       "colors": [Color(0xFFFFD700), Color(0xFFFDB931)],
-      "price": 3
+      "price": 3000
     },
     {
       "id": "Midnight",
       "colors": [Color(0xFF232526), Color(0xFF414345)],
-      "price": 3
+      "price": 3000
     },
     {
       "id": "Rainbow",
       "colors": [Color(0xFFFF0000), Color(0xFF0000FF)],
-      "price": 5
+      "price": 5000
     },
     {
       "id": "Cyberpunk",
       "colors": [Color(0xFFff00cc), Color(0xFF333399)],
-      "price": 5
+      "price": 5000
     },
     {
       "id": "Matrix",
       "colors": [Color(0xFF000000), Color(0xFF00FF00)],
-      "price": 5
+      "price": 5000
     },
   ];
 
