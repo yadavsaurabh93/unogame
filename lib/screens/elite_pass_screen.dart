@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uno_game/services/data_manager.dart';
+import 'package:uno_game/services/firestore_service.dart';
 import 'package:uno_game/widgets/background.dart';
 
 class ElitePassScreen extends StatefulWidget {
@@ -177,10 +178,13 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
   }
 
   Widget _buildTierItem(Map<String, dynamic> tier, bool isUnlocked) {
+    bool isClaimed =
+        DataManager.claimedTiers.contains(tier['level'].toString());
+
     return GestureDetector(
       onTap: () {
         DataManager.playSound();
-        _showRewardPopup(tier, isUnlocked);
+        _showRewardPopup(tier, isUnlocked, isClaimed);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -247,7 +251,20 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
                         ],
                       ),
                     ),
-                    if (isUnlocked)
+                    if (isClaimed)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                            color: Colors.greenAccent.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Text("CLAIMED",
+                            style: GoogleFonts.poppins(
+                                color: Colors.greenAccent,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold)),
+                      )
+                    else if (isUnlocked)
                       const Icon(Icons.check_circle,
                           color: Colors.greenAccent, size: 20)
                     else
@@ -263,7 +280,8 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
     );
   }
 
-  void _showRewardPopup(Map<String, dynamic> tier, bool isUnlocked) {
+  void _showRewardPopup(
+      Map<String, dynamic> tier, bool isUnlocked, bool isClaimed) {
     showDialog(
       context: context,
       barrierColor: Colors.black87,
@@ -331,25 +349,37 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
                 GestureDetector(
                   onTap: () {
                     DataManager.playSound();
-                    Navigator.pop(ctx);
-                    if (isUnlocked) {
-                      // Claim logic could go here
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text("Reward Claimed!"),
-                          backgroundColor: Colors.green));
+                    if (!isUnlocked) {
+                      Navigator.pop(ctx);
+                      return;
                     }
+                    if (isClaimed) {
+                      Navigator.pop(ctx);
+                      return;
+                    }
+
+                    // CLAIM LOGIC
+                    _claimReward(tier);
+                    Navigator.pop(ctx);
+                    setState(() {}); // Refresh UI
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 15),
                     width: double.infinity,
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
-                          isUnlocked ? Colors.cyan : Colors.blueGrey,
-                          isUnlocked ? Colors.blueAccent : Colors.grey
+                          isUnlocked
+                              ? (isClaimed ? Colors.grey : Colors.cyan)
+                              : Colors.blueGrey,
+                          isUnlocked
+                              ? (isClaimed ? Colors.grey : Colors.blueAccent)
+                              : Colors.grey
                         ]),
                         borderRadius: BorderRadius.circular(15)),
                     child: Text(
-                      isUnlocked ? "CLAIM REWARD" : "KEEP PLAYING",
+                      isUnlocked
+                          ? (isClaimed ? "ALREADY CLAIMED" : "CLAIM REWARD")
+                          : "KEEP PLAYING",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.blackOpsOne(
                           color: Colors.white, fontSize: 18),
@@ -362,5 +392,40 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
         ),
       ),
     );
+  }
+
+  void _claimReward(Map<String, dynamic> tier) {
+    String reward = tier['reward'];
+    int level = tier['level'];
+
+    if (reward.contains("Coins")) {
+      // Extract number if possible, else default
+      // "500 Coins" -> 500
+      // "${level * 200} Coins" -> calculated logic
+      int amount = 100; // default
+      if (reward == "500 Coins") amount = 500;
+      if (reward == "Bonus Coins") amount = 200;
+      if (reward.contains("Coins") &&
+          reward != "500 Coins" &&
+          reward != "Bonus Coins") {
+        // likely the multiplied one
+        amount = level * 200;
+      }
+      DataManager.coins += amount;
+    } else if (reward == "Elite Banner") {
+      DataManager.addBanner("Elite Banner");
+    } else if (reward == "Neon Avatar") {
+      DataManager.addAvatar("Neon Avatar");
+    } else if (reward == "Premium Gift") {
+      DataManager.coins += 500; // Placeholder
+    }
+
+    // Mark as claimed
+    DataManager.addClaimedTier(level);
+    FirestoreService.saveUserData();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Successfully Claimed: $reward!"),
+        backgroundColor: Colors.green));
   }
 }

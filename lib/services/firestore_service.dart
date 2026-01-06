@@ -66,6 +66,9 @@ class FirestoreService {
       if (data['selectedAward'] != null) {
         DataManager.selectedAward = data['selectedAward'];
       }
+      if (data['claimedTiers'] != null) {
+        DataManager.claimedTiers = List<String>.from(data['claimedTiers']);
+      }
       if (data['currentStreak'] != null) {
         DataManager.currentStreak = data['currentStreak'];
       }
@@ -101,6 +104,7 @@ class FirestoreService {
       'ownedBanners': DataManager.ownedBanners,
       'selectedBanner': DataManager.selectedBanner,
       'selectedAward': DataManager.selectedAward,
+      'claimedTiers': DataManager.claimedTiers,
       'currentStreak': DataManager.currentStreak,
       'lastLoginDate': DataManager.lastLoginDate,
       'dailySpinsUsed': DataManager.dailySpinsUsed,

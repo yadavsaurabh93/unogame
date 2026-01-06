@@ -139,6 +139,21 @@ class DataManager {
   static String get selectedAward => _prefs.getString('selectedAward') ?? "";
   static set selectedAward(String v) => _prefs.setString('selectedAward', v);
 
+  // CLAIMED TIERS (ELITE PASS)
+  static List<String> get claimedTiers =>
+      _prefs.getStringList('claimedTiers') ?? [];
+  static set claimedTiers(List<String> v) =>
+      _prefs.setStringList('claimedTiers', v);
+
+  static void addClaimedTier(int tierLevel) {
+    List<String> list = claimedTiers;
+    String t = tierLevel.toString();
+    if (!list.contains(t)) {
+      list.add(t);
+      claimedTiers = list;
+    }
+  }
+
   static void addDeck(String name) {
     List<String> list = ownedDecks;
     if (!list.contains(name)) {
