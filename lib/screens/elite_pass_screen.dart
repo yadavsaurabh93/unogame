@@ -118,15 +118,22 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("GOD PULSE",
+                  Text("BALANCE",
                       style: GoogleFonts.rajdhani(
                           color: Colors.cyanAccent,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                           letterSpacing: 2)),
-                  Text("SEASON 1",
-                      style: GoogleFonts.blackOpsOne(
-                          color: Colors.white, fontSize: 24)),
+                  Row(
+                    children: [
+                      const Icon(Icons.monetization_on,
+                          color: Colors.amber, size: 28),
+                      const SizedBox(width: 8),
+                      Text("${DataManager.coins}",
+                          style: GoogleFonts.blackOpsOne(
+                              color: Colors.white, fontSize: 24)),
+                    ],
+                  )
                 ],
               ),
               Container(
