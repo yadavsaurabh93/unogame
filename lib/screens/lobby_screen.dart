@@ -73,7 +73,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
     }
   }
 
-  void _j(String r, bool h) {
+  void _j(String r, bool h) async {
     if (r.isEmpty && !h) return;
     if (_nC.text.isEmpty) return;
 
@@ -87,6 +87,20 @@ class _LobbyScreenState extends State<LobbyScreen> {
         "p${Random().nextInt(999999)}"; // Increased range (Fix ID collision)
     String finalRoom = h ? "${Random().nextInt(9000) + 1000}" : r;
     String name = _nC.text;
+
+    if (!h) {
+      // CHECK IF ROOM EXISTS
+      final snap = await _db.child("rooms/$finalRoom").get();
+      if (!snap.exists || snap.value == null) {
+        if (mounted) {
+          setState(() => _isLoading = false);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Room not found! Check code."),
+              backgroundColor: Colors.redAccent));
+        }
+        return;
+      }
+    }
 
     setState(() {
       _myPid = pid;
