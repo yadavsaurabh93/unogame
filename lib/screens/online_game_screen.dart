@@ -304,10 +304,22 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
     if (s.value == null) return;
     final d = s.value as Map;
     String cTurn = d['turn']?.toString() ?? "";
+    int tStamp = int.tryParse(d['turnTimestamp'].toString()) ?? 0;
 
+    // Check 1: Invalid ID
     if (!activePlayersIds.contains(cTurn)) {
       _showAlert("FIXING STUCK TURN...", Colors.orange);
       _forceAdvanceTurn(cTurn);
+      return;
+    }
+
+    // Check 2: Timeout (30 seconds)
+    if (tStamp > 0) {
+      int diff = DateTime.now().millisecondsSinceEpoch - tStamp;
+      if (diff > 30000) {
+        _showAlert("PLAYER TIMEOUT - SKIPPING", Colors.redAccent);
+        _forceAdvanceTurn(cTurn);
+      }
     }
   }
 
@@ -322,9 +334,10 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
     int rawNext = currentIdx + (1 * direction);
     int nextIndex = (rawNext % count + count) % count;
 
-    _db
-        .child("rooms/${widget.roomId}")
-        .update({"turn": activePlayersIds[nextIndex]});
+    _db.child("rooms/${widget.roomId}").update({
+      "turn": activePlayersIds[nextIndex],
+      "turnTimestamp": ServerValue.timestamp // Reset timer
+    });
   }
 
   void _sendReaction(String emoji) {
@@ -492,6 +505,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
       };
       if (penaltyToAdd > 0) updates["penalty"] = pendingPenalty + penaltyToAdd;
 
+      updates["turnTimestamp"] = ServerValue.timestamp; // Set timestamp
       _db.child("rooms/${widget.roomId}").update(updates);
 
       if (myHand.isEmpty) {
@@ -568,7 +582,10 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
           step: 1,
           dir: direction);
 
-      _db.child("rooms/${widget.roomId}").update({"turn": nextP});
+      _db.child("rooms/${widget.roomId}").update({
+        "turn": nextP,
+        "turnTimestamp": ServerValue.timestamp // Set timestamp
+      });
       if (mounted)
         setState(() {
           isMyTurn = false;
