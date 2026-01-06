@@ -100,24 +100,37 @@ class _OfflineGameScreenState extends State<OfflineGameScreen>
 
     // DIFFICULTY LOGIC
     if (widget.difficulty == BotDifficulty.easy) {
-      if (Random().nextDouble() < 0.3) {
+      // EASY: 50% chance to miss a valid play (dumb bot)
+      if (Random().nextDouble() < 0.5) {
         c = null;
       } else {
         try {
-          c = botHand.firstWhere((x) => x.canPlayOn(topCard));
+          // Try to play a NON-Action card first (dumb move)
+          c = botHand.firstWhere(
+              (x) =>
+                  x.canPlayOn(topCard) &&
+                  x.value != CardValue.plusTwo &&
+                  x.value != CardValue.wildFour &&
+                  x.value != CardValue.skip &&
+                  x.value != CardValue.reverse,
+              orElse: () => botHand.firstWhere((x) => x.canPlayOn(topCard)));
         } catch (e) {
           c = null;
         }
       }
     } else if (widget.difficulty == BotDifficulty.hard) {
       try {
+        // HARD: Prioritize +4, then +2, then Skip, then Reverse
         c = botHand.firstWhere(
-            (x) =>
-                x.canPlayOn(topCard) &&
-                (x.value == CardValue.plusTwo ||
-                    x.value == CardValue.wildFour ||
-                    x.value == CardValue.skip),
-            orElse: () => botHand.firstWhere((x) => x.canPlayOn(topCard)));
+            (x) => x.canPlayOn(topCard) && x.value == CardValue.wildFour,
+            orElse: () => botHand.firstWhere(
+                (x) => x.canPlayOn(topCard) && x.value == CardValue.plusTwo,
+                orElse: () => botHand.firstWhere(
+                    (x) => x.canPlayOn(topCard) && x.value == CardValue.skip,
+                    orElse: () => botHand.firstWhere(
+                        (x) =>
+                            x.canPlayOn(topCard) && x.value == CardValue.reverse,
+                        orElse: () => botHand.firstWhere((x) => x.canPlayOn(topCard))))));
       } catch (e) {
         c = null;
       }
