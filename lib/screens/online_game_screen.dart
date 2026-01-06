@@ -99,11 +99,52 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
 
   @override
   void dispose() {
+    _cleanupExit(); // Ensure we remove ourselves from DB
     _gameSub?.cancel();
     _penaltyTimer?.cancel();
     _integrityTimer?.cancel(); // Cancel watchdog
     _unoPulseCtrl.dispose();
     super.dispose();
+  }
+
+  void _cleanupExit() {
+    // If game is over or we are leaving, remove from player list
+    // This prevents "Ghost Players"
+    if (widget.roomId.isNotEmpty && widget.myId.isNotEmpty) {
+      _db.child("rooms/${widget.roomId}/players/${widget.myId}").remove();
+      // Also remove from active list if possible (logic handled by remaining clients usually,
+      // but specific removal helps)
+    }
+  }
+
+  void _onWillPop(bool didPop) async {
+    if (didPop) return;
+    final shouldPop = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E2C),
+        title: Text("Leave Game?",
+            style: GoogleFonts.blackOpsOne(color: Colors.white)),
+        content: Text("You will lose your progress.",
+            style: GoogleFonts.poppins(color: Colors.white70)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Stay", style: TextStyle(color: Colors.cyan)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child:
+                const Text("Leave", style: TextStyle(color: Colors.redAccent)),
+          ),
+        ],
+      ),
+    );
+    if (shouldPop == true) {
+      if (mounted) Navigator.pop(context);
+    }
   }
 
   void _initOnline() {
@@ -715,9 +756,7 @@ class _OnlineGameScreenState extends State<OnlineGameScreen>
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (didPop) async {
-        if (didPop) return;
-      },
+      onPopInvoked: (didPop) => _onWillPop(didPop),
       child: Scaffold(
         body: ShakeWidget(
           key: _shakeKey,
