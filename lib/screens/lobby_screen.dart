@@ -49,7 +49,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
       _nC.text = DataManager.playerName;
     }
 
-    // HANDLE AUTO-JOIN (Coming from WinnerScreen)
+    // HANDLE AUTO-JOIN (Coming from WinnerScreen OR Invite)
     if (widget.autoJoinRoom != null && widget.autoJoinPid != null) {
       _rid = widget.autoJoinRoom;
       _myPid = widget.autoJoinPid;
@@ -58,7 +58,17 @@ class _LobbyScreenState extends State<LobbyScreen> {
 
       // Allow slight delay for UI to settle then listen
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _listenToRoom(_rid!);
+        if (widget.isHost != true) {
+          // If joining (Invite), we MUST add ourselves to DB first
+          _db
+              .child("rooms/$_rid/players/$_myPid")
+              .set({"name": _nC.text, "count": 0}).then((_) {
+            _listenToRoom(_rid!);
+          });
+        } else {
+          // If Host (Replay), we assume room/player might already exist or handled
+          _listenToRoom(_rid!);
+        }
       });
     }
   }
