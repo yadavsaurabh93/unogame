@@ -266,7 +266,8 @@ class FirestoreService {
 
   // --- BATTLE INVITE SYSTEM ---
 
-  static Future<void> sendBattleInvite(String targetUid) async {
+  static Future<void> sendBattleInvite(String targetUid,
+      [String? roomId]) async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || user.uid == targetUid) return;
 
@@ -278,6 +279,7 @@ class FirestoreService {
         .set({
       'fromUid': user.uid,
       'fromName': DataManager.playerName,
+      'roomId': roomId ?? "",
       'timestamp': FieldValue.serverTimestamp(),
       'status': 'pending',
     });

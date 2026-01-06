@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/player.dart';
 import '../services/data_manager.dart';
+import '../services/firestore_service.dart';
 import '../widgets/background.dart';
 import '../widgets/exit_button.dart';
 import '../widgets/modern_button.dart';
@@ -165,6 +166,123 @@ class _LobbyScreenState extends State<LobbyScreen> {
 
   void _kickPlayer(String pid) {
     if (_rid != null) _db.child("rooms/$_rid/players/$pid").remove();
+  }
+
+  void _showFriendsToInvite() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        height: 500,
+        decoration: BoxDecoration(
+          color: const Color(0xFF1A1A2E).withOpacity(0.95),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+          border: Border.all(color: Colors.white10),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 15),
+            Container(
+                width: 50,
+                height: 5,
+                decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(10))),
+            const SizedBox(height: 20),
+            Text("INVITE FRIENDS",
+                style: GoogleFonts.blackOpsOne(
+                    color: Colors.white, fontSize: 20, letterSpacing: 1.5)),
+            const SizedBox(height: 5),
+            Text("Tap to invite them to this room",
+                style:
+                    GoogleFonts.poppins(color: Colors.white54, fontSize: 12)),
+            const SizedBox(height: 20),
+            Expanded(
+              child: StreamBuilder<List<Map<String, dynamic>>>(
+                stream: FirestoreService.getFriendsStream(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Text("No friends found",
+                          style: GoogleFonts.poppins(color: Colors.white38)),
+                    );
+                  }
+                  final friends = snapshot.data!;
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: friends.length,
+                    itemBuilder: (ctx, i) {
+                      final f = friends[i];
+                      bool isOnline = f['isOnline'] ?? false;
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.05),
+                            borderRadius: BorderRadius.circular(15),
+                            border:
+                                Border.all(color: Colors.white12, width: 1)),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.blueGrey,
+                              backgroundImage: f['selectedAvatar'] != null
+                                  ? null // Use asset later if complex
+                                  : null,
+                              child: Text(f['displayName'][0],
+                                  style: const TextStyle(color: Colors.white)),
+                            ),
+                            const SizedBox(width: 15),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(f['displayName'],
+                                      style: GoogleFonts.poppins(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
+                                  Text(isOnline ? "Online" : "Offline",
+                                      style: GoogleFonts.poppins(
+                                          color: isOnline
+                                              ? Colors.greenAccent
+                                              : Colors.grey,
+                                          fontSize: 12)),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.purpleAccent,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20))),
+                              onPressed: () {
+                                if (_rid != null) {
+                                  FirestoreService.sendBattleInvite(
+                                      f['uid'], _rid!);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Invite sent to ${f['displayName']}"),
+                                          backgroundColor: Colors.green));
+                                  Navigator.pop(context);
+                                }
+                              },
+                              child: const Text("INVITE",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 10)),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   void _showDeckPicker() {
@@ -379,6 +497,13 @@ class _LobbyScreenState extends State<LobbyScreen> {
                             onTap: _showDeckPicker,
                             icon: Icons.style,
                             baseColor: Colors.blueGrey,
+                          ),
+                          const SizedBox(height: 15),
+                          ModernButton(
+                            label: "INVITE FRIENDS",
+                            onTap: _showFriendsToInvite,
+                            icon: Icons.person_add,
+                            baseColor: Colors.deepPurple,
                           ),
                           const SizedBox(height: 15),
                           ModernButton(

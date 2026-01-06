@@ -10,6 +10,7 @@ import 'package:uno_game/screens/collection_screen.dart';
 import 'package:uno_game/screens/leaderboard_screen.dart';
 import 'package:uno_game/screens/lobby_screen.dart';
 import 'package:uno_game/screens/offline_game_screen.dart';
+import 'dart:math';
 import 'package:uno_game/screens/pass_play_game_screen.dart';
 import 'package:uno_game/screens/profile_screen.dart';
 import 'package:uno_game/screens/rules_screen.dart';
@@ -39,23 +40,12 @@ class _MainMenuScreenState extends State<MainMenuScreen>
   @override
   void initState() {
     super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2))
-          ..repeat(reverse: true);
-    _initData();
-  }
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1500))
+      ..repeat(reverse: true);
 
-  @override
-  void dispose() {
-    _inviteSubscription?.cancel();
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _initData() async {
-    if (!DataManager.isInitialized) await DataManager.init();
-    DataManager.checkDailyStreak();
-    setState(() {});
+    // Initialize DataManager and check daily streak
+    _initializeAndCheckData();
 
     // Auto-show Daily Reward if first login today
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -76,10 +66,24 @@ class _MainMenuScreenState extends State<MainMenuScreen>
         if (invites.isNotEmpty && mounted) {
           // Show the most recent one
           var latest = invites.first;
-          _showRealTimeInvite(latest['fromName'], latest['fromUid']);
+          _showRealTimeInvite(
+              latest['fromName'], latest['fromUid'], latest['roomId'] ?? "");
         }
       });
     }
+  }
+
+  Future<void> _initializeAndCheckData() async {
+    if (!DataManager.isInitialized) await DataManager.init();
+    DataManager.checkDailyStreak();
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _inviteSubscription?.cancel();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -1203,7 +1207,7 @@ class _MainMenuScreenState extends State<MainMenuScreen>
     );
   }
 
-  void _showRealTimeInvite(String inviter, String fromUid) {
+  void _showRealTimeInvite(String inviter, String fromUid, String roomId) {
     // Show a premium overlay popup at the top of the screen
     showDialog(
       context: context,
@@ -1280,10 +1284,17 @@ class _MainMenuScreenState extends State<MainMenuScreen>
                         DataManager.playSound();
                         FirestoreService.clearBattleInvite(fromUid);
                         Navigator.pop(ctx);
+
+                        String myPid = "p${Random().nextInt(999999)}";
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (_) => const LobbyScreen()));
+                                builder: (_) => LobbyScreen(
+                                      autoJoinRoom:
+                                          roomId.isEmpty ? null : roomId,
+                                      autoJoinPid: myPid,
+                                      autoJoinName: DataManager.playerName,
+                                    )));
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),
