@@ -2,6 +2,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firestore_service.dart';
 
 enum BotDifficulty { easy, medium, hard }
 
@@ -69,6 +70,10 @@ class DataManager {
     coins += 100; // Reward
     xp += 50;
     _checkLevelUp();
+    if (!isGuest) {
+      FirestoreService.updateStats(
+          wins: wins, coins: coins, xp: xp, level: level);
+    }
   }
 
   static void addLoss() {
@@ -76,6 +81,10 @@ class DataManager {
     coins += 20; // Consolation
     xp += 10;
     _checkLevelUp();
+    if (!isGuest) {
+      FirestoreService.updateStats(
+          losses: losses, coins: coins, xp: xp, level: level);
+    }
   }
 
   static void _checkLevelUp() {
