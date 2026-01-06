@@ -52,7 +52,7 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int currentPassLevel = (DataManager.level / 2).floor();
+    int currentPassLevel = DataManager.level;
     if (currentPassLevel > 50) currentPassLevel = 50;
     if (currentPassLevel < 1) currentPassLevel = 1;
 
