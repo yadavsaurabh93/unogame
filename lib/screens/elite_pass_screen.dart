@@ -177,81 +177,96 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
   }
 
   Widget _buildTierItem(Map<String, dynamic> tier, bool isUnlocked) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      height: 80,
-      child: Row(
-        children: [
-          // Level Indicator
-          Container(
-            width: 50,
-            alignment: Alignment.center,
-            child: Text("${tier['level']}",
-                style: GoogleFonts.blackOpsOne(
-                    color: isUnlocked ? Colors.cyanAccent : Colors.white24,
-                    fontSize: 20)),
-          ),
-          const SizedBox(width: 10),
-          // Reward Card
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: isUnlocked
-                    ? Colors.white.withOpacity(0.08)
-                    : Colors.white.withOpacity(0.02),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: isUnlocked
-                        ? Colors.cyanAccent.withOpacity(0.3)
-                        : Colors.white10),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: (tier['color'] as Color).withOpacity(0.1),
-                      shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () {
+        if (isUnlocked) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Claimed ${tier['reward']}!"),
+              backgroundColor: Colors.green));
+          // Logic to actually Add Reward would go here (e.g. DataManager.coins += X)
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Reach this Level to Unlock!"),
+              backgroundColor: Colors.red));
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        height: 80,
+        child: Row(
+          children: [
+            // Level Indicator
+            Container(
+              width: 50,
+              alignment: Alignment.center,
+              child: Text("${tier['level']}",
+                  style: GoogleFonts.blackOpsOne(
+                      color: isUnlocked ? Colors.cyanAccent : Colors.white24,
+                      fontSize: 20)),
+            ),
+            const SizedBox(width: 10),
+            // Reward Card
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: isUnlocked
+                      ? Colors.white.withOpacity(0.08)
+                      : Colors.white.withOpacity(0.02),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      color: isUnlocked
+                          ? Colors.cyanAccent.withOpacity(0.3)
+                          : Colors.white10),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: (tier['color'] as Color).withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(tier['icon'] as IconData,
+                          color: isUnlocked
+                              ? tier['color'] as Color
+                              : Colors.white24,
+                          size: 24),
                     ),
-                    child: Icon(tier['icon'] as IconData,
-                        color: isUnlocked
-                            ? tier['color'] as Color
-                            : Colors.white24,
-                        size: 24),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(tier['reward'],
-                            style: GoogleFonts.poppins(
-                                color:
-                                    isUnlocked ? Colors.white : Colors.white38,
-                                fontWeight: FontWeight.bold)),
-                        if (tier['isPremium'])
-                          Text("PREMIUM ONLY",
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(tier['reward'],
                               style: GoogleFonts.poppins(
-                                  color: Colors.pinkAccent,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1)),
-                      ],
+                                  color: isUnlocked
+                                      ? Colors.white
+                                      : Colors.white38,
+                                  fontWeight: FontWeight.bold)),
+                          if (tier['isPremium'])
+                            Text("PREMIUM ONLY",
+                                style: GoogleFonts.poppins(
+                                    color: Colors.pinkAccent,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1)),
+                        ],
+                      ),
                     ),
-                  ),
-                  if (isUnlocked)
-                    const Icon(Icons.check_circle,
-                        color: Colors.greenAccent, size: 20)
-                  else
-                    Icon(Icons.lock_outline,
-                        color: Colors.white.withOpacity(0.2), size: 20),
-                ],
+                    if (isUnlocked)
+                      const Icon(Icons.check_circle,
+                          color: Colors.greenAccent, size: 20)
+                    else
+                      Icon(Icons.lock_outline,
+                          color: Colors.white.withOpacity(0.2), size: 20),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

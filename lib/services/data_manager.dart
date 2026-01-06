@@ -469,9 +469,9 @@ class DataManager {
         "glow": Colors.transparent
       };
     return {
-      "name": "IRON",
-      "color": Colors.blueGrey,
-      "icon": Icons.hexagon_rounded,
+      "name": "BRONZE 1",
+      "color": Colors.brown[400]!,
+      "icon": Icons.shield_moon_rounded,
       "glow": Colors.transparent
     };
   }
