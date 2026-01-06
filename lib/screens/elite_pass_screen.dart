@@ -179,16 +179,8 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
   Widget _buildTierItem(Map<String, dynamic> tier, bool isUnlocked) {
     return GestureDetector(
       onTap: () {
-        if (isUnlocked) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Claimed ${tier['reward']}!"),
-              backgroundColor: Colors.green));
-          // Logic to actually Add Reward would go here (e.g. DataManager.coins += X)
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Reach this Level to Unlock!"),
-              backgroundColor: Colors.red));
-        }
+        DataManager.playSound();
+        _showRewardPopup(tier, isUnlocked);
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -266,6 +258,107 @@ class _ElitePassScreenState extends State<ElitePassScreen> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showRewardPopup(Map<String, dynamic> tier, bool isUnlocked) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black87,
+      builder: (ctx) => Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 320,
+            padding: const EdgeInsets.all(30),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1A1A2E),
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                  color: isUnlocked ? Colors.cyanAccent : Colors.redAccent,
+                  width: 2),
+              boxShadow: [
+                BoxShadow(
+                    color: (isUnlocked ? Colors.cyanAccent : Colors.redAccent)
+                        .withOpacity(0.3),
+                    blurRadius: 30)
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isUnlocked ? Icons.check_circle_outline : Icons.lock,
+                  size: 60,
+                  color: isUnlocked ? Colors.cyanAccent : Colors.redAccent,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  isUnlocked ? "REWARD UNLOCKED" : "REWARD LOCKED",
+                  style: GoogleFonts.blackOpsOne(
+                      color: Colors.white, fontSize: 22, letterSpacing: 1),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  isUnlocked
+                      ? "You have unlocked this reward!"
+                      : "Reach Level ${tier['level']} to unlock!",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(color: Colors.white70),
+                ),
+                const SizedBox(height: 30),
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.05),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(tier['icon'], size: 30, color: tier['color']),
+                      const SizedBox(width: 15),
+                      Text(tier['reward'],
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30),
+                GestureDetector(
+                  onTap: () {
+                    DataManager.playSound();
+                    Navigator.pop(ctx);
+                    if (isUnlocked) {
+                      // Claim logic could go here
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Reward Claimed!"),
+                          backgroundColor: Colors.green));
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [
+                          isUnlocked ? Colors.cyan : Colors.blueGrey,
+                          isUnlocked ? Colors.blueAccent : Colors.grey
+                        ]),
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Text(
+                      isUnlocked ? "CLAIM REWARD" : "KEEP PLAYING",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.blackOpsOne(
+                          color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
