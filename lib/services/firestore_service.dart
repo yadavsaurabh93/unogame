@@ -63,6 +63,9 @@ class FirestoreService {
       if (data['selectedBanner'] != null) {
         DataManager.selectedBanner = data['selectedBanner'];
       }
+      if (data['selectedAward'] != null) {
+        DataManager.selectedAward = data['selectedAward'];
+      }
       if (data['currentStreak'] != null) {
         DataManager.currentStreak = data['currentStreak'];
       }
@@ -97,6 +100,7 @@ class FirestoreService {
       'selectedAvatar': DataManager.selectedAvatar,
       'ownedBanners': DataManager.ownedBanners,
       'selectedBanner': DataManager.selectedBanner,
+      'selectedAward': DataManager.selectedAward,
       'currentStreak': DataManager.currentStreak,
       'lastLoginDate': DataManager.lastLoginDate,
       'dailySpinsUsed': DataManager.dailySpinsUsed,

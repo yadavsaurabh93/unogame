@@ -126,6 +126,10 @@ class DataManager {
       _prefs.getString('selectedBanner') ?? "Basic Blue";
   static set selectedBanner(String v) => _prefs.setString('selectedBanner', v);
 
+  // AWARD MANAGEMENT
+  static String get selectedAward => _prefs.getString('selectedAward') ?? "";
+  static set selectedAward(String v) => _prefs.setString('selectedAward', v);
+
   static void addDeck(String name) {
     List<String> list = ownedDecks;
     if (!list.contains(name)) {

@@ -168,6 +168,22 @@ class _MainMenuScreenState extends State<MainMenuScreen>
                               fontWeight: FontWeight.bold,
                               height: 1)),
                       const SizedBox(width: 8),
+                      // Display Equipped Award Badge
+                      if (DataManager.selectedAward.isNotEmpty)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                              color: Colors.amber.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                  color: Colors.amberAccent.withOpacity(0.5))),
+                          child: Text(DataManager.selectedAward,
+                              style: const TextStyle(
+                                  color: Colors.amber,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold)),
+                        ),
                     ],
                   ),
                   const SizedBox(height: 30),

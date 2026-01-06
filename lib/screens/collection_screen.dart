@@ -229,17 +229,20 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget _collectionItem(dynamic item) {
     bool isEquipped = false;
     String name = "";
+
     if (_activeTab == "CARDS") {
       name = item['name'];
-      isEquipped = DataManager.selectedDeck == name;
-    } else if (_activeTab == "AWARDS") {
-      name = item['name'];
-      isEquipped = false; // Awards can't be equipped, they are just trophies
-    } else {
+      isEquipped = DataManager.selectedDeck == item['name'];
+    } else if (_activeTab == "AVATARS") {
       name = item['id'];
-      isEquipped = (_activeTab == "AVATARS")
-          ? DataManager.selectedAvatar == name
-          : DataManager.selectedBanner == name;
+      isEquipped = DataManager.selectedAvatar == item['id'];
+    } else if (_activeTab == "BANNERS") {
+      name = item['id'];
+      isEquipped = DataManager.selectedBanner == item['id'];
+    } else if (_activeTab == "AWARDS") {
+      name = item[
+          'id']; // This is actually the ID for awards too in DataManager usage
+      isEquipped = DataManager.selectedAward == item['id'];
     }
 
     return Container(
@@ -303,60 +306,49 @@ class _CollectionScreenState extends State<CollectionScreen> {
             ),
             const SizedBox(height: 10),
 
-            // Only show Equip button if NOT an Award
-            if (_activeTab != "AWARDS")
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    if (_activeTab == "CARDS") {
-                      DataManager.selectedDeck = name;
-                      // Auto-Save selection to Cloud
-                      if (!DataManager.isGuest) FirestoreService.saveUserData();
-                    } else if (_activeTab == "AVATARS") {
-                      DataManager.selectedAvatar = name;
-                      DataManager.profilePicPath = null;
-                      if (!DataManager.isGuest) {
-                        FirestoreService.updateProfile(avatar: name);
-                        FirestoreService.saveUserData();
-                      }
-                    } else {
-                      DataManager.selectedBanner = name;
-                      if (!DataManager.isGuest) {
-                        FirestoreService.updateProfile(banner: name);
-                        FirestoreService.saveUserData();
-                      }
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  if (_activeTab == "CARDS") {
+                    DataManager.selectedDeck = name;
+                    if (!DataManager.isGuest) FirestoreService.saveUserData();
+                  } else if (_activeTab == "AVATARS") {
+                    DataManager.selectedAvatar = name;
+                    DataManager.profilePicPath = null;
+                    if (!DataManager.isGuest) {
+                      FirestoreService.updateProfile(avatar: name);
+                      FirestoreService.saveUserData();
                     }
-                  });
-                  DataManager.playSound();
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isEquipped ? Colors.cyanAccent : Colors.white10,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Text((isEquipped ? "EQUIPPED" : "EQUIP"),
-                      style: TextStyle(
-                          color: isEquipped ? Colors.black : Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold)),
-                ),
-              )
-            else // FOR AWARDS SHOW 'UNLOCKED' BADGE
-              Container(
+                  } else if (_activeTab == "BANNERS") {
+                    DataManager.selectedBanner = name;
+                    if (!DataManager.isGuest) {
+                      FirestoreService.updateProfile(banner: name);
+                      FirestoreService.saveUserData();
+                    }
+                  } else if (_activeTab == "AWARDS") {
+                    DataManager.selectedAward = name; // 'name' holds the ID
+                    if (!DataManager.isGuest) FirestoreService.saveUserData();
+                  }
+                });
+                DataManager.playSound();
+              },
+              child: Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(5),
+                  color: isEquipped ? Colors.cyanAccent : Colors.white10,
+                  borderRadius: BorderRadius.circular(15),
                 ),
-                child: const Text("UNLOCKED",
+                child: Text(
+                    _activeTab == "AWARDS"
+                        ? (isEquipped ? "SELECTED" : "SELECT")
+                        : (isEquipped ? "EQUIPPED" : "EQUIP"),
                     style: TextStyle(
-                        color: Colors.amber,
-                        fontSize: 10,
+                        color: isEquipped ? Colors.black : Colors.white,
+                        fontSize: 11,
                         fontWeight: FontWeight.bold)),
               ),
+            ),
 
             const SizedBox(height: 10),
           ],
